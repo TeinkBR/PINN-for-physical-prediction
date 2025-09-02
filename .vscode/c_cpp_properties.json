@@ -1,18 +1,20 @@
 {
-    "configurations": [
-        {
-            "name": "Mac",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/pinn_env/lib/python3.12/site-packages/torch/include/torch/csrc/api/include/torch",
-                "${workspaceFolder}/pinn_env/lib/python3.12/site-packages/torch/include/torch/csrc/api/include/torch"
-            ],
-            "defines": [],
-            "compilerPath": "/Users/jingyili/Downloads/nozzle_projec/pinn_loss.cpp",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "macos-clang-arm64"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/include",
+        "/Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/include/torch/csrc/api/include",
+        "/Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/pybind11/include"
+      ],
+      "defines": [],
+      "macFrameworkPath": [],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "macos-clang-arm64"
+    }
+  ],
+  "version": 4
 }

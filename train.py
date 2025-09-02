@@ -1,14 +1,14 @@
 import torch
-device = torch.device("cpu")
+device = torch.device("mps")
 import torch.optim as optim
 from loss import compute_loss, update_weights
 from sampling import generate_training_data, residual_adaptive_sampling
 import numpy as np
 # Try to import the compiled C++ extension; if missing, build it in-place using PyTorch's cpp_extension
 try:
-    import pinn_loss  # C++ module
-except Exception:
-    # Delay heavy imports until needed
+    import pinn_loss
+except ImportError:
+    # If import fails, build it in-place
     from torch.utils.cpp_extension import load
     import os
     here = os.path.dirname(__file__)
@@ -16,6 +16,8 @@ except Exception:
     build_dir = os.path.join(here, 'build_ext')
     os.makedirs(build_dir, exist_ok=True)
     pinn_loss = load(name='pinn_loss', sources=[src], build_directory=build_dir, verbose=True)
+
+
 
 def compute_mre(model, coords, I_true, ri_mean, ri_std, device, boundary_only=False):
     model.eval()

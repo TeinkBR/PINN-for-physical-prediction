@@ -95,10 +95,10 @@ pinn_loss_EXTERNAL_OBJECTS =
 
 /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: CMakeFiles/pinn_loss.dir/pinn_loss.cpp.o
 /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: CMakeFiles/pinn_loss.dir/build.make
-/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/lib/libc10.dylib
-/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/lib/libtorch.dylib
-/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/lib/libtorch_cpu.dylib
-/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/lib/libc10.dylib
+/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/lib/libc10.dylib
+/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/lib/libtorch.dylib
+/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/lib/libtorch_cpu.dylib
+/Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/lib/libc10.dylib
 /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so: CMakeFiles/pinn_loss.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/jingyili/Downloads/Side_project/nozzle_projec/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared module /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_loss.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pinn_loss.dir/link.txt --verbose=$(VERBOSE)

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DUSE_C10D_GLOO -DUSE_DISTRIBUTED -DUSE_RPC -DUSE_TENSORPIPE -Dpinn_loss_EXPORTS
 
-CXX_INCLUDES = -isystem /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/include -isystem /Users/jingyili/Downloads/Side_project/nozzle_projec/pinn_env/lib/python3.12/site-packages/torch/include/torch/csrc/api/include
+CXX_INCLUDES = -isystem /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/include -isystem /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/torch/include/torch/csrc/api/include -isystem /Users/jingyili/miniforge3/envs/pinn_env/lib/python3.10/site-packages/pybind11/include -isystem /Users/jingyili/miniforge3/envs/pinn_env/include/python3.10
 
 CXX_FLAGSarm64 = -std=gnu++17 -arch arm64 -fPIC
 

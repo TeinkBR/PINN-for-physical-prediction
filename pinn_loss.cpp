@@ -5,7 +5,6 @@
 #include <mutex>
 #include <cmath>
 #include <pybind11/stl.h>
-// pybind11 headers are included by torch/extension.h; keep stl helper for std containers
 namespace py = pybind11;
 
 // Define ResPINN struct
@@ -20,7 +19,7 @@ struct ResPINN : torch::nn::Module {
             hidden_layers.push_back(register_module("hidden_" + std::to_string(i), layer));
         }
         output_layer = register_module("output_layer", torch::nn::Linear(num_neurons, 1));
-        to(device); // Move model to specified device
+        to(device);
     }
 
     torch::Tensor forward(torch::Tensor x) {
@@ -38,7 +37,7 @@ struct ResPINN : torch::nn::Module {
     torch::nn::Linear output_layer{nullptr};
 };
 
-// Physics functions (placeholders - update to match physics.py)
+// Physics functions (placeholders)
 torch::Tensor direction_vector(const torch::Tensor& phi, const torch::Tensor& theta) {
     auto s_x = torch::sin(theta) * torch::cos(phi);
     auto s_y = torch::sin(theta) * torch::sin(phi);
@@ -47,23 +46,23 @@ torch::Tensor direction_vector(const torch::Tensor& phi, const torch::Tensor& th
 }
 
 torch::Tensor kappa_e(const torch::Tensor& x, const torch::Tensor& y, const torch::Tensor& z) {
-    return torch::ones_like(x) * 0.1; // Placeholder
+    return torch::ones_like(x) * 0.1;
 }
 
 torch::Tensor I_b(const torch::Tensor& x, const torch::Tensor& y, const torch::Tensor& z, const torch::Tensor& lambda_) {
-    return torch::ones_like(x); // Placeholder
+    return torch::ones_like(x);
 }
 
 torch::Tensor epsilon_lambda_w(const torch::Tensor& x, const torch::Tensor& y, const torch::Tensor& z,
-                               const torch::Tensor& phi, const torch::Tensor& theta, const torch::Tensor& lambda_) {
-    return torch::ones_like(x) * 0.5; // Placeholder
+                              const torch::Tensor& phi, const torch::Tensor& theta, const torch::Tensor& lambda_) {
+    return torch::ones_like(x) * 0.5;
 }
 
 // Function to load model state dictionary
 void load_model_state(ResPINN& model, const std::string& state_dict_path, torch::Device device) {
-    torch::OrderedDict<std::string, torch::Tensor> state_dict;
-    torch::load(state_dict, state_dict_path, device);
-    model.load_state_dict(state_dict);
+    torch::serialize::InputArchive archive;
+    archive.load_from(state_dict_path, device);
+    model.load(archive); // Use load() instead of load_state_dict
 }
 
 // Mutex for thread-safe updates
@@ -71,14 +70,14 @@ std::mutex loss_mutex;
 
 // Compute loss for a chunk
 void compute_loss_chunk(ResPINN& model,
-                        const torch::Tensor& x_col_chunk,
-                        const torch::Tensor& x_bc_chunk,
-                        const std::vector<float>& weights,
-                        float ri_mean, float ri_std,
-                        torch::Tensor& loss_out,
-                        std::vector<torch::Tensor>& losses_out,
-                        torch::Device device) {
-    const float KAPPA_SCALE = 1.0; // Adjust as needed
+                       const torch::Tensor& x_col_chunk,
+                       const torch::Tensor& x_bc_chunk,
+                       const std::vector<float>& weights,
+                       float ri_mean, float ri_std,
+                       torch::Tensor& loss_out,
+                       std::vector<torch::Tensor>& losses_out,
+                       torch::Device device) {
+    const float KAPPA_SCALE = 1.0;
 
     // Prepare collocation points
     int batch_size = x_col_chunk.size(0);
@@ -136,7 +135,7 @@ void compute_loss_chunk(ResPINN& model,
     torch::Tensor L_pen = torch::tensor(0.0, options);
     int param_count = 0;
     for (auto& param : model.named_parameters()) {
-        if (param.name().find("weight") != std::string::npos) {
+        if (param.key().find("weight") != std::string::npos) { // Use key() instead of name()
             L_pen = L_pen + torch::sum(param.value().pow(2));
             param_count += param.value().numel();
         }
@@ -162,7 +161,7 @@ void compute_loss_chunk(ResPINN& model,
     }
 }
 
-// Updated compute_loss to return a tuple
+// Compute loss function
 std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> compute_loss(
     torch::Tensor x_col, torch::Tensor x_bc,
     const std::vector<float>& weights, float ri_mean, float ri_std,
@@ -171,7 +170,7 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> compute_l
     torch::Device device = torch::kCPU;
     if (device_type == "mps" && torch::hasMPS()) {
         device = torch::kMPS;
-        num_threads = 1; // Single-threaded for MPS
+        num_threads = 1;
     } else if (device_type == "mps") {
         std::cerr << "MPS not available, falling back to CPU" << std::endl;
     }
@@ -199,8 +198,8 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> compute_l
         auto x_col_chunk = x_col.slice(0, start, end);
         auto x_bc_chunk = x_bc.slice(0, start, std::min(end, int(x_bc.size(0))));
         threads.emplace_back(compute_loss_chunk, std::ref(model), x_col_chunk, x_bc_chunk,
-                             weights, ri_mean, ri_std, std::ref(total_loss),
-                             std::ref(total_losses), device);
+                            weights, ri_mean, ri_std, std::ref(total_loss),
+                            std::ref(total_losses), device);
     }
 
     for (auto& t : threads) {
@@ -218,8 +217,8 @@ std::tuple<torch::Tensor, torch::Tensor, torch::Tensor, torch::Tensor> compute_l
 // Python binding
 PYBIND11_MODULE(pinn_loss, m) {
     m.def("compute_loss", [](torch::Tensor x_col, torch::Tensor x_bc,
-                             std::vector<float> weights, float ri_mean, float ri_std,
-                             std::string model_state_path, int num_threads, std::string device_type) {
+                            std::vector<float> weights, float ri_mean, float ri_std,
+                            std::string model_state_path, int num_threads, std::string device_type) {
         return compute_loss(x_col, x_bc, weights, ri_mean, ri_std, model_state_path, num_threads, device_type);
     }, "Compute PINN loss with multi-threading",
        py::arg("x_col"), py::arg("x_bc"), py::arg("weights"), py::arg("ri_mean"),
