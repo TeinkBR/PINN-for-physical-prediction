@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/pinn_env/lib/python3.12/site-packages/torch/include/torch/csrc/api/include/torch",
+                "${workspaceFolder}/pinn_env/lib/python3.12/site-packages/torch/include/torch/csrc/api/include/torch"
+            ],
+            "defines": [],
+            "compilerPath": "/Users/jingyili/Downloads/nozzle_projec/pinn_loss.cpp",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "macos-clang-arm64"
+        }
+    ],
+    "version": 4
+}

@@ -1,0 +1,9 @@
+// filepath: /Users/jingyili/Downloads/Side_project/nozzle_projec/pyproject.toml
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel",
+    "torch",
+    "numpy<2.0"
+]
+build-backend = "setuptools.build_meta"
