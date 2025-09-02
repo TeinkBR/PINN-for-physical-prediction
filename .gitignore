@@ -1,0 +1,5 @@
+pinn_env/
+build/
+*.so
+*.pyc
+__pycache__/
